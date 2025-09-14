@@ -1,0 +1,50 @@
+# ------------------
+# Python
+# ------------------
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.pycache/
+
+# Virtual environments
+venv/
+.venv/
+
+# Logs & caches
+*.log
+*.sqlite3
+*.db
+*.pot
+*.py[cod]
+*.pkl
+
+# ------------------
+# FastAPI / Uvicorn
+# ------------------
+*.pid
+*.sock
+
+# ------------------
+# Firebase / GCP / Secrets
+# ------------------
+config/             # whole config directory
+*.json              # Firebase/GCP keys
+*.env               # local environment variables
+credentials.*       # any file like credentials.json
+
+# ------------------
+# IDE & OS files
+# ------------------
+.vscode/
+.idea/
+*.swp
+.DS_Store
+Thumbs.db
+
+# ------------------
+# Node (if frontend exists in project)
+# ------------------
+node_modules/
+dist/
+build/

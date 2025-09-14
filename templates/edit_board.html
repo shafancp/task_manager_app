@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Task Board</title>
+</head>
+<body class="bg-gray-100 min-h-screen p-8">
+    <div class="max-w-2xl mx-auto bg-white rounded-lg shadow-md p-6">
+        <h2 class="text-2xl font-bold text-gray-800 mb-6">Edit Task Board</h2>
+        
+        <form method="POST" action="/task-board/{{ task_board_id }}/update">
+            <div class="mb-4">
+                <label class="block text-gray-700 mb-2" for="name">Board Name</label>
+                <input type="text" name="name" id="name" 
+                       value="{{ task_board.name }}"
+                       class="w-full px-3 py-2 border rounded">
+            </div>
+            
+            <div class="mb-4">
+                <label class="block text-gray-700 mb-2" for="description">Description</label>
+                <textarea name="description" id="description"
+                          class="w-full px-3 py-2 border rounded">{{ task_board.description }}</textarea>
+            </div>
+
+            <div class="mb-4">
+                <label class="block text-gray-700 mb-2">Members</label>
+                <div id="members-list" class="mb-4 space-y-2">
+                    {% for member in members %}
+                    <div class="flex items-center justify-between p-2 bg-gray-50 rounded" id="member-{{ member.id }}">
+                        <span>{{ member.name }} </span>
+                        {% if member.id != task_board.created_by.id %}
+                        <button type="button" 
+                                class="text-red-600 hover:underline"
+                                onclick="removeMember('{{ member.id }}', '{{ task_board_id }}')">
+                            Remove
+                        </button>
+                        {% endif %}
+                    </div>
+                    {% endfor %}
+                </div>
+                <div class="relative">
+                    <input type="text" id="user-search" placeholder="Search users to add..." 
+                           class="w-full px-3 py-2 border rounded"
+                           oninput="searchUsers(this.value)">
+                    <div id="search-results" class="absolute z-10 w-full mt-1 bg-white border rounded shadow-lg hidden max-h-60 overflow-auto"></div>
+                </div>
+            </div>
+
+            <div class="flex space-x-4">
+                <button type="submit" 
+                    class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg transition-colors">
+                    Save Changes
+                </button>
+                <a href="/task-board/{{ task_board_id }}" 
+                    class="bg-gray-200 hover:bg-gray-300 text-gray-800 px-6 py-2 rounded-lg transition-colors">
+                    Cancel
+                </a>
+            </div>
+        </form>
+    </div>
+
+    <script>
+    function searchUsers(query) {
+        if (query.length < 2) {
+            document.getElementById('search-results').classList.add('hidden');
+            return;
+        }
+
+        axios.get(`/api/users/search?q=${query}&board_id={{ task_board_id }}`)
+            .then(response => {
+                const results = document.getElementById('search-results');
+                results.innerHTML = '';
+                
+                if (response.data.length === 0) {
+                    results.innerHTML = '<div class="p-2 text-gray-500">No users found</div>';
+                } else {
+                    response.data.forEach(user => {
+                        const div = document.createElement('div');
+                        div.className = 'p-2 hover:bg-gray-100 cursor-pointer';
+                        div.textContent = `${user.name}`;
+                        div.onclick = () => {
+                            addMember(user.id, '{{ task_board_id }}');
+                            document.getElementById('user-search').value = '';
+                            results.classList.add('hidden');
+                        };
+                        results.appendChild(div);
+                    });
+                }
+                results.classList.remove('hidden');
+            })
+            .catch(error => {
+                console.error('Search failed:', error);
+            });
+    }
+
+        function addMember(userId, boardId) {
+            axios.post(`/task-board/${boardId}/add-member`, { user_id: userId })
+                .then(() => location.reload())
+                .catch(error => alert(error.response?.data?.detail || 'Failed to add member'));
+        }
+
+        function removeMember(userId, boardId) {
+            if (confirm('Are you sure you want to remove this member?')) {
+                axios.post(`/task-board/${boardId}/remove-member`, { user_id: userId })
+                    .then(() => location.reload())
+                    .catch(error => alert(error.response?.data?.detail || 'Failed to remove member'));
+            }
+        }
+
+        document.addEventListener('click', function(e) {
+            if (!document.getElementById('user-search').contains(e.target) && 
+                !document.getElementById('search-results').contains(e.target)) {
+                document.getElementById('search-results').classList.add('hidden');
+            }
+        });
+    </script>
+</body>
+</html>

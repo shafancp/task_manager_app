@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+  <title>Register</title>
+  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
+  <script type="module" src="/static/firebase-login.js"></script>
+</head>
+<body class="bg-gray-100 min-h-screen flex items-center justify-center p-4">
+  <div class="w-full max-w-md bg-white rounded-lg shadow-md p-8">
+    <h2 class="text-2xl font-bold text-gray-800 mb-6 text-center">Register New Account</h2>
+
+    <div class="space-y-4">
+      <input type="text" id="full-name" placeholder="Full Name" required
+        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+      
+      <input type="email" id="email" placeholder="Email" required
+        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+      
+      <input type="password" id="password" placeholder="Password" required
+        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+      
+      <input type="password" id="confirm-password" placeholder="Confirm Password" required
+        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+    </div>
+
+    <button id="register-button"
+      class="w-full mt-6 bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-lg transition-colors">
+      Register
+    </button>
+
+    <div id="alert" class="hidden mt-4 p-3 text-sm text-red-700 bg-red-100 rounded-lg"></div>
+    <p id="status" class="mt-4 text-center text-gray-600"></p>
+
+    <p class="mt-6 text-center text-gray-600">
+      Already have an account?
+      <a href="/" class="text-blue-600 hover:text-blue-800 font-medium">Sign in</a>
+    </p>
+  </div>
+</body>
+</html>
